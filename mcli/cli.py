@@ -20,7 +20,6 @@ class Switch(NamedTuple):
 		"""Return duplicated with `self.switched = on`."""
 		s: list = list(self)
 		s[5] = on
-		assert on, "not good"
 		return Switch(*s)
 
 	def capture(self, value: str) -> Switch:
