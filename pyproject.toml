@@ -1,0 +1,8 @@
+[project]
+name = "mcli"
+description = "A cli Minecraft mod manager"
+version = "0.0"
+dependencies = [
+	"requests",
+	"colorama",
+]
