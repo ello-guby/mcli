@@ -112,7 +112,7 @@ class Project:
 	def prettyprint(self) -> None:
 		'''Print this project in a pretty way.'''
 		print(
-			f'{self.title} ({self.latestver()}):\n{self.description}'
+			f'{self.title} ({self.type}:{self.slug}:{self.latestver()}):\n{self.description}'
 		)
 
 	@classmethod
