@@ -204,11 +204,13 @@ def get_project_versions(slugid: str, forloader: str = '', formcver: str = '') -
 	)
 
 	if not r.ok:
-		raise HTTPError(
-			f'Error requesting verions for project ({slugid})'
-			f' with params ({forloader}, {formcver})' if forloader else ''
-			f': {r.json()}'
+		err = HTTPError(
+			f'Error requesting verions for project "{slugid}"' + \
+			(f' with params ({forloader}, {formcver})' if forloader else '') + \
+			f': {r.json() if r.status_code != 404 else 'Project slugid is invalid or inaccessable.'}'
 		)
+
+		raise err
 
 	l = r.json()
 
