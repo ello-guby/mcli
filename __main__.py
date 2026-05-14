@@ -1,6 +1,11 @@
-from src.cli import Cmd
+'''Entry for mcli.'''
 
-class mCmd(Cmd):
-    def cmd_print(self, msg: str) -> None:
-        print(msg)
+from mcli import operation
 
+if __name__ == '__main__':
+	while True:
+		cmd, txt = input(" > ").split(None, 1)
+
+		match cmd:
+			case 'search' | 'find':
+				operation.search(txt)
