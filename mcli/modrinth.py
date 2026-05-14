@@ -168,7 +168,7 @@ def search(query: str) -> Search:
 	r = requests.get(APIURL + '/search', {'query': query}, timeout=5000)
 
 	if not r.ok:
-		raise requests.HTTPError(f"Error requesting a search: {r.text}")
+		raise requests.HTTPError(f'Error requesting a search: {r.text}')
 
 	d = r.json()
 	d['queried'] = query
@@ -180,7 +180,7 @@ def get_project(slugid: str) -> Project:
 	r = requests.get(APIURL + f'/project/{slugid}', timeout=5000)
 
 	if not r.ok:
-		raise HTTPError(f"Error requesting the project ({slugid}): {r.text}")
+		raise HTTPError(f'Error requesting the project ({slugid}): {r.text}')
 
 	d = r.json()
 	return Project.fromdict(d)

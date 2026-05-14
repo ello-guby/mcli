@@ -1,62 +1,62 @@
-"""A Command Line Interface related library."""
+'''A Command Line Interface related library.'''
 
 from typing import Any, Callable, NamedTuple
 
-# A switch specification type: "h/help" thing.
+# A switch specification type: 'h/help' thing.
 SwitchSpec = str
 
 class Switch(NamedTuple):
-	"""A switch of cmd arguments. Create one with `Switch.fromspec()`"""
-	# "t/test=SOMETHING: Try test with `SOMETHING`"
+	'''A switch of cmd arguments. Create one with `Switch.fromspec()`'''
+	# 't/test=SOMETHING: Try test with `SOMETHING`'
 	short: str             # t
 	long: str              # test
 	capturing: bool        # True
 	placeholder: str       # SOMETHING
 	description: str       # Try test with `SOMETHING`
 	switched: bool = False # True after `SwitchParser(...).parse(a)` and `a` has '-t' or '--test'.
-	value: str = ""        # The value taken.
+	value: str = ''        # The value taken.
 
 	def switch(self, on: bool):
-		"""Return duplicated with `self.switched = on`."""
+		'''Return duplicated with `self.switched = on`.'''
 		s: list = list(self)
 		s[5] = on
 		return Switch(*s)
 
 	def capture(self, value: str) -> Switch:
-		"""Return duplicated with `self.captured = what`."""
+		'''Return duplicated with `self.captured = what`.'''
 		s: list = list(self)
 		s[6] = value
 		return Switch(*s)
 
 	@staticmethod
 	def fromspec(spec: SwitchSpec) -> Switch:
-		"""
-		Build `Switch` from a spec string (`"o/option=OPTION: do option."`) into:
+		'''
+		Build `Switch` from a spec string (`'o/option=OPTION: do option.'`) into:
 		```
 		Switch(
-			short:       "o",
-			long:        "option",
+			short:       'o',
+			long:        'option',
 			capturing:   True,
-			placeholder: "OPTION",
-			description: "do option.",
+			placeholder: 'OPTION',
+			description: 'do option.',
 		)
 		```
-		"""
-		short = ""
-		long = ""
+		'''
+		short = ''
+		long = ''
 		capturing = False
-		placeholder = ""
-		description = ""
+		placeholder = ''
+		description = ''
 
-		if ":" in spec:
-			spec, description = spec.split(":", 1)
+		if ':' in spec:
+			spec, description = spec.split(':', 1)
 
-		if "=" in spec:
-			spec, placeholder = spec.split("=", 1)
+		if '=' in spec:
+			spec, placeholder = spec.split('=', 1)
 			capturing = True
 
-		if "/" in spec:
-			short, long = spec.split("/", 1)
+		if '/' in spec:
+			short, long = spec.split('/', 1)
 		else:
 			long = spec
 
@@ -72,23 +72,23 @@ class Switch(NamedTuple):
 		return self.long < value.long
 
 class SwitchParser:
-	"""
+	'''
 	A class to handle dash prefixed command line arguments.
 	Usage example:
 	```
-	switch = SwitchParser("h/help: Display help", "i/input=INPUT: Take `INPUT`")
-	switch.process(["cmd", "-h"])
+	switch = SwitchParser('h/help: Display help', 'i/input=INPUT: Take `INPUT`')
+	switch.process(['cmd', '-h'])
 	
-	if switch["help"].switched:
+	if switch['help'].switched:
 		showhelp()
 
-	if switch["input"].switched:
-		input = switch["input"].captured
+	if switch['input'].switched:
+		input = switch['input'].captured
 	```
 	mcli's takes on python's `argparse.ArgumentParser`.
 	Switch specification syntax takes from [https://fishshell.com/docs/current/cmds/argparse.html]
 	but limited.
-	"""
+	'''
 	def __init__(self, *specs: SwitchSpec) -> None:
 		self.switches = [Switch.fromspec(s) for s in specs]
 		self._switchcheck()
@@ -105,10 +105,10 @@ class SwitchParser:
 		for a, aswitch in enumerate(self.switches):
 
 			if len(aswitch.short) > 1:
-				raise NameError(f"Spec at index {a} is not a character ('{aswitch.short}').")
+				raise NameError(f'Spec at index {a} is not a character ("{aswitch.short}").')
 
 			if len(aswitch.long) <= 1:
-				raise NameError(f"Switch at index {a} has very short long ('{aswitch.long}').")
+				raise NameError(f'Switch at index {a} has very short long ("{aswitch.long}").')
 
 			for b, bswitch in enumerate(self.switches):
 				if a == b:
@@ -116,31 +116,31 @@ class SwitchParser:
 
 				if aswitch.long == bswitch.long:
 					raise NameError(
-						f"Switch at index {a} has the same long "
-						f"as the one at idx {b} ('{aswitch.long}')."
+						f'Switch at index {a} has the same long '
+						f'as the one at idx {b} ("{aswitch.long}").'
 					)
 
 				if aswitch.short == bswitch.short:
 					raise NameError(
-						f"Switch at index {a} has same short as "
-						f"the one at idx {b} ('{aswitch.short}')."
+						f'Switch at index {a} has same short as '
+						f'the one at idx {b} ("{aswitch.short}").'
 					)
 
 	def addswitch(self, switch: Switch | SwitchSpec) -> None:
-		"""Add a switch. Raise `NameError` if switches had non-unique name."""
+		'''Add a switch. Raise `NameError` if switches had non-unique name.'''
 		if isinstance(switch, SwitchSpec):
 			switch = Switch.fromspec(switch)
 		self.switches.append(switch)
 		self._switchcheck()
 
 	def removeswitch(self, switch: str | Switch) -> None:
-		"""Remove a switch. Raise `LookupError` if the switch is not found."""
+		'''Remove a switch. Raise `LookupError` if the switch is not found.'''
 		if isinstance(switch, str):
 			switch = self.findswitch(switch)
 		self.switches.remove(switch)
 
 	def process(self, args: list[str]) -> list[str]:
-		"""Consume any '-' or '--' prefixed from `args` and switch them."""
+		'''Consume any '-' or '--' prefixed from `args` and switch them.'''
 
 		pargs: list[str] = [] # processed arguments
 
@@ -156,19 +156,19 @@ class SwitchParser:
 			short, key, capturing, value = self.switchparse(arg)
 
 			if short:
-				# TODO: combo short "-Syu" style.
+				# TODO: combo short '-Syu' style.
 				...
 			else:
 				switch = self.findswitch(key)
 
-				if switch.capturing and not capturing:             # if "i=" "-i VALUE"
+				if switch.capturing and not capturing:             # if 'i=' '-i VALUE'
 					i += 1
 					value = args[i]
 
-				elif switch.capturing and capturing and not value: # if "i=" "-i="
+				elif switch.capturing and capturing and not value: # if 'i=' '-i='
 					pass
 
-				elif switch.capturing and capturing and value:     # if "i=" "-i=value"
+				elif switch.capturing and capturing and value:     # if 'i=' '-i=value'
 					pass
 
 			self.switch(key, True, value)
@@ -177,15 +177,15 @@ class SwitchParser:
 		return pargs
 
 	def reset(self) -> None:
-		"""Reverse what `self.process()` has done."""
+		'''Reverse what `self.process()` has done.'''
 		for switch in self.switches:
 			self.switch(switch)
 
-	def switch(self, switch: str | Switch, on = False, captured = "") -> None:
-		"""
+	def switch(self, switch: str | Switch, on = False, captured = '') -> None:
+		'''
 		Switch a switch from `self.switches` witch reference of `switch`.
 		Optionally `captured`. Raise `LookupError` if no switch found.
-		"""
+		'''
 		if isinstance(switch, str):
 			switch = self.findswitch(switch)
 
@@ -193,50 +193,50 @@ class SwitchParser:
 		self.switches.insert(idx, self.switches.pop(idx).switch(on).capture(captured))
 
 	def findswitch(self, ref: str) -> Switch:
-		"""
+		'''
 		Return a switch from `self.switches` with `ref`.
 		Raise `LookupError` if none found.
-		"""
+		'''
 		for switch in self.switches:
 			comp = switch.short if len(ref) == 1 else switch.long
 
 			if comp == ref:
 				return switch
 
-		raise LookupError(f"No switch with reference of '{ref}' found.")
+		raise LookupError(f'No switch with reference of "{ref}" found.')
 
 	@staticmethod
 	def isswitch(switch: str) -> bool:
-		"""Wheather `switch` is a valid switch."""
-		return switch.startswith("-")
+		'''Wheather `switch` is a valid switch.'''
+		return switch.startswith('-')
 
 	@staticmethod
 	def switchparse(switch: str) -> tuple[bool, str, bool, str]:
-		"""
-		Parse switch string (`"-o=option"` or `"--option=option"`) into:
+		'''
+		Parse switch string (`'-o=option'` or `'--option=option'`) into:
 		```
 		(
 			short:     True,     # If it's single dashed. `False` otherwise.
-			key:       "o",      # Or "option".
-			capturing: True,     # If "=" in the switch.
-			value:     "option", # The captured value.
+			key:       'o',      # Or 'option'.
+			capturing: True,     # If '=' in the switch.
+			value:     'option', # The captured value.
 		)
 		```
 		Do `self.isswitch()` the switch before feed into this.
-		"""
+		'''
 		short = True
-		key = ""
+		key = ''
 		capturing = False
-		value = ""
+		value = ''
 
 		switch = switch.strip()[1:]
 
-		if switch.startswith("-"):
+		if switch.startswith('-'):
 			switch = switch[1:]
 			short = False
 
-		if "=" in switch:
-			key, value = switch.split("=", 1)
+		if '=' in switch:
+			key, value = switch.split('=', 1)
 			capturing = True
 		else:
 			key = switch
@@ -244,14 +244,14 @@ class SwitchParser:
 		return short, key, capturing, value
 
 class Cmd:
-	"""
+	'''
 	mcli's takes on python's cmd.Cmd class.
-	"""
+	'''
 
-	COMMAND_PREFIX = "do_"
+	COMMAND_PREFIX = 'do_'
 
 	def __init__(self) -> None:
-		"""Create a new `Cmd`"""
+		'''Create a new `Cmd`'''
 		self.commands: dict[str, Callable] = {}
 
 		for cmds in self._commands():
@@ -259,11 +259,11 @@ class Cmd:
 
 	@classmethod
 	def _commands(cls) -> list[dict[str, Any]]:
-		"""
+		'''
 		Return all method with `COMMAND_PREFIX`ed name including super's method.
 		Used for indexing commands.
 		For actual commands, they're inside `self.commands`.
-		"""
+		'''
 		r = []
 		mro = cls.mro()
 		mro = mro[0:len(mro) - 1]
@@ -275,7 +275,7 @@ class Cmd:
 
 	@staticmethod
 	def parsedoc(docstr: str|None) -> tuple[list[str], list[str], str]:
-		"""
+		'''
 		Parse document string like:
 		```
 		configure|config|conf|c [option] [value]:
@@ -285,32 +285,32 @@ class Cmd:
 		```
 		into:
 		```
-		["configure", "config", "conf", "c"],
-		["[option]", "[value]"],
-		"Configure [option] ..."
+		['configure', 'config', 'conf', 'c'],
+		['[option]', '[value]'],
+		'Configure [option] ...'
 		```
-		"""
+		'''
 		if not docstr:
 			return [], [], ''
 
-		cmds = ""
-		args = ""
-		desc = ""
+		cmds = ''
+		args = ''
+		desc = ''
 
-		if ":" in docstr:
-			docstr, desc = docstr.split(":", 1)
-			desc = desc.strip("\n")
+		if ':' in docstr:
+			docstr, desc = docstr.split(':', 1)
+			desc = desc.strip('\n')
 
-		if " " in docstr:
-			cmds, args = docstr.split(" ", 1)
+		if ' ' in docstr:
+			cmds, args = docstr.split(' ', 1)
 
-		if " " in args:
-			args = args.split(" ")
+		if ' ' in args:
+			args = args.split(' ')
 		else:
 			args = [args]
 
-		if "|" in cmds:
-			cmds = cmds.split("|")
+		if '|' in cmds:
+			cmds = cmds.split('|')
 		else:
 			cmds = [cmds]
 

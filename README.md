@@ -17,7 +17,7 @@ Installation
 
 1. Copy or clone this repository.
 
-2. Create alias to the repository, something of `alias mcli "python /path/to/repo"`.
+2. Create alias to the repository, something of `alias mcli 'python /path/to/repo'`.
 
 3. [Usage](#usage)
 
