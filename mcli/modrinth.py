@@ -163,9 +163,17 @@ class Search:
 		d['hits'] = [Project.fromdict(proj) for proj in d['hits']]
 		return cls(**d)
 
-def search(query: str) -> Search:
+def search(query: str, forloader: str = '', formcver: str = '') -> Search:
 	'''Search for projects.'''
-	r = requests.get(APIURL + '/search', {'query': query}, timeout=5000)
+	r = requests.get(
+		APIURL + '/search',
+		{
+			'query': query
+		} | ({
+			'facets': f'[["categories:{forloader}"],["versions:{formcver}"]]'
+		} if forloader else {}),
+		timeout=5000
+	)
 
 	if not r.ok:
 		raise requests.HTTPError(f'Error requesting a search: {r.text}')
@@ -205,4 +213,3 @@ def get_project_versions(slugid: str, forloader: str = '', formcver: str = '') -
 	l = r.json()
 
 	return [ProjectVersion.fromdict(d) for d in l]
-
