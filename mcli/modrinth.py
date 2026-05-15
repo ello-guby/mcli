@@ -84,7 +84,7 @@ class File:
 	'''A modrinth kind of file.'''
 	url: str
 	filename: str
-	size: str
+	size: int
 	file_type: FileType = FileType.UNKNOWN
 
 	def __repr__(self) -> str:
