@@ -9,3 +9,5 @@ if __name__ == '__main__':
 		match cmd:
 			case 'search' | 'find':
 				operation.search(txt)
+			case 'download':
+				operation.download(txt, '')
