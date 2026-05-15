@@ -87,6 +87,9 @@ class File:
 	size: str
 	file_type: FileType = FileType.UNKNOWN
 
+	def __repr__(self) -> str:
+		return f'<ModrinthFile "{self.filename}">'
+
 @_jsonclass
 class Project:
 	'''A project in modrinth.'''
