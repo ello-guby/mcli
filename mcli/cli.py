@@ -71,6 +71,12 @@ class Switch(NamedTuple):
 	def __lt__(self, value) -> bool:
 		return self.long < value.long
 
+	def __repr__(self) -> str:
+		return f'<Switch "' \
+		f'{f'{self.short}/' if self.short else ''}' \
+		f'{self.long}' \
+		f'{f'={self.placeholder}' if self.capturing else ''}{self.description}">'
+
 class SwitchParser:
 	'''
 	A class to handle dash prefixed command line arguments.
