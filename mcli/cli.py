@@ -163,8 +163,12 @@ class SwitchParser:
 			short, key, capturing, value = self.switchparse(arg)
 
 			if short:
-				# TODO: combo short '-Syu' style.
-				...
+				if capturing:
+					raise ValueError(f'{arg} cannot assign value (not sure how to impl).')
+
+				for char in key:
+					self.switch(char, True)
+
 			else:
 				switch = self.findswitch(key)
 
@@ -181,7 +185,8 @@ class SwitchParser:
 				elif not switch.capturing and capturing:           # if 'i' '-i='
 					raise ValueError(f'{switch} does not capture.')
 
-			self.switch(key, True, value)
+				self.switch(key, True, value)
+
 			i += 1
 
 		return pargs
