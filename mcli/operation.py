@@ -3,18 +3,26 @@
 from sys import stdout
 from os import path
 import requests
-from mcli import modrinth
+from mcli import modrinth, minecraft
 
-def search(query: str, forloader: str = '', formcver: str = '') -> None:
+def search(query: str, /, instance: minecraft.Instance | None = None) -> None:
 	'''Search for Modrinth projects and print them.'''
+
+	loader = ''
+	mcver = ''
+
+	if instance:
+		loader = instance.loader
+		mcver = instance.version
+
 	stdout.write(
 		f'Searching Modrinth for "{query}"' + (
-			f' for "{forloader}({formcver})".' if forloader else '.'
+			f' for "{loader}({mcver})".' if loader else '.'
 		)
 	)
 	stdout.flush()
 
-	s = modrinth.search(query, forloader, formcver)
+	s = modrinth.search(query, loader, mcver)
 
 	if not s.total_hits:
 		print('\33[2K\rNo project found.')
@@ -25,9 +33,16 @@ def search(query: str, forloader: str = '', formcver: str = '') -> None:
 			print()
 		print(f'{s.offset} to {min(s.offset + s.limit, s.total_hits)} out of {s.total_hits}.')
 
-def download(slugid: str, outdir: str, /, forloader: str = '', formcver: str = '') -> None:
+def download(slugid: str, outdir: str, /, instance: minecraft.Instance | None = None) -> None:
 	'''Download `slugid` into `outdir`.'''
-	vers = modrinth.get_project_versions(slugid, forloader, formcver)
+
+	loader = ''
+	mcver = ''
+
+	if instance:
+		loader = instance.loader
+
+	vers = modrinth.get_project_versions(slugid, loader, mcver)
 
 	if not vers:
 		return
