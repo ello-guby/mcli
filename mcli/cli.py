@@ -76,7 +76,7 @@ class Switch(NamedTuple):
 		f'{f'{self.short}/' if self.short else ''}' \
 		f'{self.long}' \
 		f'{f'={self.placeholder}' if self.capturing else ''}' \
-		f'{f':{self.description}' if self.description else ''}">'
+		f'{f'*{self.value}' if self.switched else ''}">'
 
 class SwitchParser:
 	'''
