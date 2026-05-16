@@ -318,6 +318,8 @@ class Cmd:
 
 		if ' ' in docstr:
 			cmds, args = docstr.split(' ', 1)
+		else:
+			cmds = docstr
 
 		if ' ' in args:
 			args = args.split(' ')
