@@ -2,8 +2,8 @@
 
 from sys import stdout
 from os import path
-from mcli.modrinth import search as mrsearch, get_project_versions as get_mrproject_versions
 import requests
+from mcli import modrinth
 
 def search(query: str, forloader: str = '', formcver: str = '') -> None:
 	'''Search for Modrinth projects and print them.'''
@@ -14,7 +14,7 @@ def search(query: str, forloader: str = '', formcver: str = '') -> None:
 	)
 	stdout.flush()
 
-	s = mrsearch(query, forloader, formcver)
+	s = modrinth.search(query, forloader, formcver)
 
 	if not s.total_hits:
 		print('\33[2K\rNo project found.')
@@ -27,7 +27,7 @@ def search(query: str, forloader: str = '', formcver: str = '') -> None:
 
 def download(slugid: str, outdir: str, /, forloader: str = '', formcver: str = '') -> None:
 	'''Download `slugid` into `outdir`.'''
-	vers = get_mrproject_versions(slugid, forloader, formcver)
+	vers = modrinth.get_project_versions(slugid, forloader, formcver)
 
 	if not vers:
 		return
