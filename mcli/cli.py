@@ -178,6 +178,9 @@ class SwitchParser:
 				elif switch.capturing and capturing and value:     # if 'i=' '-i=value'
 					pass
 
+				elif not switch.capturing and capturing:           # if 'i' '-i='
+					raise ValueError(f'{switch} does not capture.')
+
 			self.switch(key, True, value)
 			i += 1
 
