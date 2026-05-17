@@ -6,12 +6,10 @@ from mcli.modrinth import Loader
 
 class Instance:
 	'''An object holding a Minecraft instance properties.'''
-	path: str = ''
-	version: str = ''
-	loader: Loader = Loader.UNSUPPORTED
-
 	def __init__(self, folder: str) -> None:
-		self.path = folder
+		self.path: str = folder
+		self.version: str = ''
+		self.loader: Loader = Loader.UNSUPPORTED
 		self.probe()
 
 	def probe(self) -> None:
