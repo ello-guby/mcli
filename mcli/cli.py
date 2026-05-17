@@ -1,7 +1,6 @@
 '''A Command Line Interface related library.'''
 
-from typing import Any, Callable, NamedTuple
-from annotationlib import get_annotations
+from typing import Callable, NamedTuple
 
 # A switch specification type: 'h/help' thing.
 SwitchSpec = str
