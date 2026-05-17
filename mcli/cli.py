@@ -290,6 +290,17 @@ class Cmd:
 
 		cmd(self, args)
 
+	def cli(self) -> None:
+		'''Evaluate into Command Line Interface, `self.process` arguments from `input`.'''
+		while True:
+			try:
+				self.process(input(' > ').split())
+			except EOFError, KeyboardInterrupt:
+				print('Command Line Interface closed.')
+				break
+			except Exception as e:
+				print(f'Error: {e}')
+
 	@classmethod
 	def _commands(cls) -> list[Callable]:
 		'''
