@@ -59,8 +59,12 @@ class MCmd(Cmd):
 	def do_search(self, args: list[str]) -> None:
 		'''search|find|s|f [query...]: Search for projects like [query...].'''
 		search(' '.join(args), self.instance)
-	
+
 	def do_download(self, args: list[str]) -> None:
 		'''download|install|d|i [slugid...]: Download and install a project like [slugid...].'''
 		for arg in args:
 			download(arg, self.instance)
+
+	def do_status(self, args: list[str]) -> None:
+		'''status: Print environment status.'''
+		print(f'{self.instance.loader}({self.instance.version}) at "{self.instance.path}"')
