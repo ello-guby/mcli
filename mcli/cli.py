@@ -162,7 +162,7 @@ class SwitchParser:
 
 			short, key, capturing, value = self.switchparse(arg)
 
-			if short:
+			if short and len(key) > 1:
 				if capturing:
 					raise ValueError(f'{arg} cannot assign value (not sure how to impl).')
 
