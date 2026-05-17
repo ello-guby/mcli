@@ -1,13 +1,23 @@
 '''Entry for mcli.'''
 
-from mcli import operation
+import sys
+import os
+import mcli
+from mcli import minecraft
 
 if __name__ == '__main__':
-	while True:
-		cmd, txt = input(" > ").split(None, 1)
+	args = sys.argv
+	# its 'python mcli path/to/instance', pop will remain instance's path
+	args.pop(0) 
 
-		match cmd:
-			case 'search' | 'find':
-				operation.search(txt)
-			case 'download':
-				operation.download(txt, '')
+	instancepath = os.getcwd()
+
+	if args:
+		if os.path.exists(args[0]):
+			instancepath = args.pop(0)
+
+	cmd = mcli.MCmd(minecraft.Instance(instancepath))
+	if not args:
+		cmd.cli()
+	else:
+		cmd.process(args)
