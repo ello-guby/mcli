@@ -61,5 +61,15 @@ class Instance:
 		'''Config folder.'''
 		return path.join(self.path, 'config')
 
+	@property
+	def resourcepackfolder(self) -> str:
+		'''Resource pack folder.'''
+		return path.join(self.path, 'resourcepacks')
+
+	@property
+	def shaderfolder(self) -> str:
+		'''Shader folder.'''
+		return path.join(self.path, 'shaderpacks')
+
 	def __repr__(self) -> str:
 		return f'<MinecraftInstance {f'{self.loader}:{self.version}' if self.is_valid() else 'invalid'}>'
