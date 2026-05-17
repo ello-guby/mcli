@@ -273,7 +273,7 @@ class Cmd:
 			print(self.parsedoc(cmds.__doc__))
 
 	@classmethod
-	def _commands(cls) -> list[dict[str, Any]]:
+	def _commands(cls) -> list[Callable]:
 		'''
 		Return all method with `COMMAND_PREFIX`ed name including super's method.
 		Used for indexing commands.
