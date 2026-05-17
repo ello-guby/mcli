@@ -7,14 +7,14 @@ from mcli.cli import Cmd
 
 def search(query: str, instance: Instance) -> None:
 	'''Interfaced `operation.search`.'''
-	if not instance.is_valid():
+	if not instance:
 		operation.search(query)
 	else:
 		operation.search(query, loader=instance.loader, mcver=instance.version)
 
 def download(slugid: str, instance: Instance) -> None:
 	'''Interfaced `operation.download`.'''
-	if not instance.is_valid():
+	if not instance:
 		operation.download(slugid, './')
 
 	proj = modrinth.get_project(slugid)
