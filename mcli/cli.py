@@ -269,8 +269,11 @@ class Cmd:
 		'''Create a new `Cmd`'''
 		self.commands: dict[str, Callable] = {}
 
-		for cmds in self._commands():
-			print(self.parsedoc(cmds.__doc__))
+		for cmd in self._commands():
+			self.commands[cmd.__name__.removeprefix(self.COMMAND_PREFIX)] = cmd
+			commands, *_ = self.parsedoc(cmd.__doc__)
+			for command in commands:
+				self.commands[command] = cmd
 
 	@classmethod
 	def _commands(cls) -> list[Callable]:
