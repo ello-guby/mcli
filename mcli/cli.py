@@ -1,6 +1,7 @@
 '''A Command Line Interface related library.'''
 
 from typing import Any, Callable, NamedTuple
+from annotationlib import get_annotations
 
 # A switch specification type: 'h/help' thing.
 SwitchSpec = str
@@ -274,6 +275,20 @@ class Cmd:
 			commands, *_ = self.parsedoc(cmd.__doc__)
 			for command in commands:
 				self.commands[command] = cmd
+
+	def process(self, args: list[str]) -> None:
+		'''
+		Process list of arguments with the command name on the 1st index.
+		And passing other arguments into the command.
+		'''
+		cmd, *args = args
+
+		if cmd in self.commands:
+			cmd = self.commands[cmd]
+		else:
+			raise LookupError(f'There are no "{cmd}" command.')
+
+		cmd(self, args)
 
 	@classmethod
 	def _commands(cls) -> list[Callable]:
