@@ -5,7 +5,7 @@ from os import path
 import requests
 from mcli import modrinth
 
-def search(query: str, /, loader: str = '', mcver: str = '') -> None:
+def search(query: str, *, loader: str = '', mcver: str = '') -> None:
 	'''Search for Modrinth projects and print them.'''
 
 	stdout.write(
@@ -26,7 +26,7 @@ def search(query: str, /, loader: str = '', mcver: str = '') -> None:
 			print()
 		print(f'{s.offset} to {min(s.offset + s.limit, s.total_hits)} out of {s.total_hits}.')
 
-def download(slugid: str, outdir: str, /, loader: str = '', mcver: str = '') -> None:
+def download(slugid: str, outdir: str, *, loader: str = '', mcver: str = '') -> None:
 	'''Download `slugid`.'''
 
 	vers = modrinth.get_project_versions(slugid, loader, mcver)
