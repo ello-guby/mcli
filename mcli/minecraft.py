@@ -71,5 +71,8 @@ class Instance:
 		'''Shader folder.'''
 		return path.join(self.path, 'shaderpacks')
 
+	def __bool__(self) -> bool:
+		return self.is_valid()
+
 	def __repr__(self) -> str:
 		return f'<MinecraftInstance {f'{self.loader}:{self.version}' if self.is_valid() else 'invalid'}>'
