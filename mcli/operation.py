@@ -74,3 +74,16 @@ def remove(slugid: str, dot: Dot) -> None:
 			break
 
 	dot.remove_package(slugid)
+
+def list_packages(query: str, dot: Dot) -> None:
+	'''List downloaded package.'''
+	if not dot:
+		raise EnvironmentError(f'mcli did not initialize properly. "{dot.packagejson}" not found.')
+
+	for pkg in dot.packages.keys():
+		if query:
+			if query in pkg:
+				print(pkg)
+		else:
+			print(pkg)
+
