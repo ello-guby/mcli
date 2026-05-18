@@ -44,8 +44,6 @@ def download(
 	if not vers:
 		return
 
-	if len(vers) > 1:
-		print('There are multiple versions, selecting latest.')
 	ver = vers[0]
 
 	for file in ver.files:
