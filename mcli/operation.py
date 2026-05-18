@@ -66,12 +66,12 @@ def download(
 def remove(slugid: str, dot: Dot) -> None:
 	if not dot:
 		raise EnvironmentError(f'mcli did not initialize properly. "{dot.packagejson}" not found.')
-	
+
 	for pkg, files in dot.packages.items():
 		if dot.slugidmatch(slugid, pkg):
 			for file in files:
 				os.remove(file)
-				print(f'Deleted "{file}"') 
+				print(f'Deleted "{file}"')
 			break
 
 	dot.remove_package(slugid)
