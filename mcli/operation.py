@@ -52,5 +52,4 @@ def download(slugid: str, outdir: str, *, loader: str = '', mcver: str = '', dot
 	proj = project if project else modrinth.get_project(slugid)
 
 	if dot:
-		dot.set_package(proj.id, [file.filename for file in ver.files])
-
+		dot.set_package(proj, [file.filename for file in ver.files])

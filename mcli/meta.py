@@ -3,6 +3,7 @@
 import json
 import os
 from os import path
+from mcli import modrinth
 from mcli.minecraft import Instance
 
 class Dot:
@@ -24,14 +25,17 @@ class Dot:
 					if txt:
 						self.packages = json.loads(txt)
 
-	def set_package(self, project_id: str, filenames: list[str]) -> None:
+	def set_package(self, project: modrinth.Project, filenames: list[str]) -> None:
 		'''set downloaded data into the package.json file.'''
-		self.packages[project_id] = filenames
+		self.packages[self.slugid(project)] = filenames
 		self.packagesave()
 
-	def remove_package(self, project_id: str) -> None:
+	def remove_package(self, slugid: str) -> None:
 		'''Remove data from the package.json file.'''
-		del self.packages[project_id]
+		for pkg in self.packages.keys():
+			if self.slugidmatch(slugid, pkg):
+				del self.packages[pkg]
+				break
 		self.packagesave()
 
 	def packagesave(self) -> None:
@@ -39,6 +43,18 @@ class Dot:
 		if self.instance:
 			with open(self.packagejson, 'wt', encoding='utf8') as file:
 				file.write(json.dumps(self.packages, indent=2))
+
+	@staticmethod
+	def slugid(project: modrinth.Project) -> str:
+		'''Return package string based of `project`.'''
+		return f'{project.slug}|{project.id}'
+
+	@staticmethod
+	def slugidmatch(s: str, slugid: str) -> bool:
+		'''Match `s` with `slugid`. If `slugid` is invalid, default to str match.'''
+		if '|' in slugid:
+			return s in slugid.split('|', 1)
+		return s == slugid
 
 	@property
 	def folder(self) -> str:
