@@ -41,6 +41,10 @@ def download(slugid: str, instance: Instance, dot: Dot) -> None:
 	else:
 		raise TypeError(f'Project "{proj.slug}" is of type "{proj.type}", download is unsupported.')
 
+def remove(slugid: str, dot: Dot) -> None:
+	'''Interfaced `operation.remove`.'''
+	operation.remove(slugid, dot)
+
 class MCmd(Cmd):
 	'''mcli's custom Cmd.'''
 	def __init__(self, instance: Instance, dot: Dot) -> None:
@@ -73,6 +77,11 @@ class MCmd(Cmd):
 		'''download|install|d|i [slugid...]: Download and install a project like [slugid...].'''
 		for arg in args:
 			download(arg, self.instance, self.dot)
+
+	def do_remove(self, args: list[str]) -> None:
+		'''remove|rm [slugid...]: Delete installed projects like [slugid...].'''
+		for arg in args:
+			remove(arg, self.dot)
 
 	def do_status(self, args: list[str]) -> None:
 		'''status: Print environment status.'''
