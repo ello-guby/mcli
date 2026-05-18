@@ -1,5 +1,6 @@
 '''mcli's operations.'''
 
+import os
 from sys import stdout
 from os import path
 import requests
@@ -61,3 +62,16 @@ def download(
 
 	if dot:
 		dot.set_package(proj, [path.abspath(path.join(outdir, file.filename)) for file in ver.files])
+
+def remove(slugid: str, dot: Dot) -> None:
+	if not dot:
+		raise EnvironmentError(f'mcli did not initialize properly. "{dot.packagejson}" not found.')
+	
+	for pkg, files in dot.packages.items():
+		if dot.slugidmatch(slugid, pkg):
+			for file in files:
+				os.remove(file)
+				print(f'Deleted "{file}"') 
+			break
+
+	dot.remove_package(slugid)
