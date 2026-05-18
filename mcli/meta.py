@@ -25,9 +25,9 @@ class Dot:
 					if txt:
 						self.packages = json.loads(txt)
 
-	def set_package(self, project: modrinth.Project, filenames: list[str]) -> None:
+	def set_package(self, project: modrinth.Project, filepaths: list[str]) -> None:
 		'''set downloaded data into the package.json file.'''
-		self.packages[self.slugid(project)] = filenames
+		self.packages[self.slugid(project)] = filepaths
 		self.packagesave()
 
 	def remove_package(self, slugid: str) -> None:
