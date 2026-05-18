@@ -4,6 +4,7 @@ from mcli import operation
 from mcli import modrinth
 from mcli.minecraft import Instance
 from mcli.cli import Cmd
+from mcli.meta import Dot
 
 def search(query: str, instance: Instance) -> None:
 	'''Interfaced `operation.search`.'''
@@ -12,7 +13,7 @@ def search(query: str, instance: Instance) -> None:
 	else:
 		operation.search(query, loader=instance.loader, mcver=instance.version)
 
-def download(slugid: str, instance: Instance) -> None:
+def download(slugid: str, instance: Instance, dot: Dot) -> None:
 	'''Interfaced `operation.download`.'''
 	if not instance:
 		operation.download(slugid, './')
@@ -29,16 +30,24 @@ def download(slugid: str, instance: Instance) -> None:
 			downpath = instance.resourcepackfolder
 
 	if downpath:
-		operation.download(slugid, downpath, loader=instance.loader, mcver=instance.version)
+		operation.download(
+			slugid,
+			downpath,
+			loader=instance.loader,
+			mcver=instance.version,
+			dot=dot,
+			project=proj
+		)
 	else:
 		raise TypeError(f'Project "{proj.slug}" is of type "{proj.type}", download is unsupported.')
 
 class MCmd(Cmd):
 	'''mcli's custom Cmd.'''
-	def __init__(self, instance: Instance) -> None:
+	def __init__(self, instance: Instance, dot: Dot) -> None:
 		super().__init__()
 
 		self.instance = instance
+		self.dot = dot
 
 	def do_help(self, args: list[str]) -> None:
 		'''help|h [what]: print help.'''
@@ -63,7 +72,7 @@ class MCmd(Cmd):
 	def do_download(self, args: list[str]) -> None:
 		'''download|install|d|i [slugid...]: Download and install a project like [slugid...].'''
 		for arg in args:
-			download(arg, self.instance)
+			download(arg, self.instance, self.dot)
 
 	def do_status(self, args: list[str]) -> None:
 		'''status: Print environment status.'''

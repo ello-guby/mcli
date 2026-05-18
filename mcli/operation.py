@@ -4,6 +4,7 @@ from sys import stdout
 from os import path
 import requests
 from mcli import modrinth
+from mcli.meta import Dot
 
 def search(query: str, *, loader: str = '', mcver: str = '') -> None:
 	'''Search for Modrinth projects and print them.'''
@@ -26,7 +27,7 @@ def search(query: str, *, loader: str = '', mcver: str = '') -> None:
 			print()
 		print(f'{s.offset} to {min(s.offset + s.limit, s.total_hits)} out of {s.total_hits}.')
 
-def download(slugid: str, outdir: str, *, loader: str = '', mcver: str = '') -> None:
+def download(slugid: str, outdir: str, *, loader: str = '', mcver: str = '', dot: Dot | None = None, project: modrinth.Project | None = None) -> None:
 	'''Download `slugid`.'''
 
 	vers = modrinth.get_project_versions(slugid, loader, mcver)
@@ -47,4 +48,9 @@ def download(slugid: str, outdir: str, *, loader: str = '', mcver: str = '') -> 
 					output.write(chunk)
 					stdout.write(f'\33[2K\rDownloading "{file.filename}": {min(left/file.size*100, 100):.2f}%')
 		stdout.write(f'\33[2K\rDownloaded "{file.filename}"\n')
+
+	proj = project if project else modrinth.get_project(slugid)
+
+	if dot:
+		dot.set_package(proj.id, [file.filename for file in ver.files])
 
