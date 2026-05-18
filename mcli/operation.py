@@ -27,7 +27,15 @@ def search(query: str, *, loader: str = '', mcver: str = '') -> None:
 			print()
 		print(f'{s.offset} to {min(s.offset + s.limit, s.total_hits)} out of {s.total_hits}.')
 
-def download(slugid: str, outdir: str, *, loader: str = '', mcver: str = '', dot: Dot | None = None, project: modrinth.Project | None = None) -> None:
+def download(
+	slugid: str,
+	outdir: str,
+	*,
+	loader: str = '',
+	mcver: str = '',
+	dot: Dot | None = None,
+	project: modrinth.Project | None = None
+) -> None:
 	'''Download `slugid`.'''
 
 	vers = modrinth.get_project_versions(slugid, loader, mcver)
@@ -52,4 +60,4 @@ def download(slugid: str, outdir: str, *, loader: str = '', mcver: str = '', dot
 	proj = project if project else modrinth.get_project(slugid)
 
 	if dot:
-		dot.set_package(proj, [file.filename for file in ver.files])
+		dot.set_package(proj, [path.abspath(path.join(outdir, file.filename)) for file in ver.files])
