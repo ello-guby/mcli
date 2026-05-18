@@ -64,6 +64,7 @@ def download(
 		dot.set_package(proj, [path.abspath(path.join(outdir, file.filename)) for file in ver.files])
 
 def remove(slugid: str, dot: Dot) -> None:
+	'''Remove `slugid`.'''
 	if not dot:
 		raise EnvironmentError(f'mcli did not initialize properly. "{dot.packagejson}" not found.')
 
