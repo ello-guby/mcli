@@ -86,3 +86,7 @@ class MCmd(Cmd):
 	def do_status(self, args: list[str]) -> None:
 		'''status: Print environment status.'''
 		print(f'{self.instance.loader}({self.instance.version}) at "{self.instance.path}"')
+
+	def do_list(self, args: list[str]) -> None:
+		'''list|ls [slugid...]: Print installed project like [slugid...].'''
+		operation.list_packages(' '.join(args), self.dot)
