@@ -166,15 +166,22 @@ class Search:
 		d['hits'] = [Project.fromdict(proj) for proj in d['hits']]
 		return cls(**d)
 
-def search(query: str, forloader: str = '', formcver: str = '') -> Search:
+def search(
+	query: str,
+	*,
+	offset: int = 0,
+	limit: int = 10,
+	forloader: str = '',
+	formcver: str = ''
+) -> Search:
 	'''Search for projects.'''
 	r = requests.get(
 		APIURL + '/search',
 		{
-			'query': query
+			'query': query, 'offset': offset, 'limit': limit,
 		} | ({
 			'facets': f'[["categories:{forloader}"],["versions:{formcver}"]]'
-		} if forloader else {}),
+		} if forloader and formcver else {}),
 		timeout=5000
 	)
 
