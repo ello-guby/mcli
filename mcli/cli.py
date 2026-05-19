@@ -152,10 +152,16 @@ class SwitchParser:
 		pargs: list[str] = [] # processed arguments
 
 		i = 0
+		breaking = False
 		while i < len(args):
 			arg = args[i]
 
-			if not self.isswitch(arg):
+			if arg == "--":
+				breaking = True
+				i += 1
+				continue
+
+			if not self.isswitch(arg) or breaking:
 				pargs.append(arg)
 				i += 1
 				continue
