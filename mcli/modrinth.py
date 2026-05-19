@@ -198,6 +198,7 @@ def get_project_versions(
 	forloader: str = '',
 	formcver: str = ''
 ) -> list[ProjectVersion]:
+	'''Return list of version of the `slugid` project.'''
 	r = requests.get(
 		f'{APIURL}/project/{slugid}/version',
 		{
