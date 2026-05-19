@@ -127,7 +127,7 @@ class SwitchParser:
 						f'as the one at idx {b} ("{aswitch.long}").'
 					)
 
-				if aswitch.short == bswitch.short:
+				if aswitch.short == bswitch.short and aswitch.short:
 					raise NameError(
 						f'Switch at index {a} has same short as '
 						f'the one at idx {b} ("{aswitch.short}").'
@@ -219,7 +219,7 @@ class SwitchParser:
 				return switch
 
 		raise LookupError(f'No switch with reference of "{ref}" found.')
-	
+
 	def has(self, ref: str) -> bool:
 		'''Return `True` if there is switch with reference of `ref`.'''
 		try:
