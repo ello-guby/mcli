@@ -3,24 +3,12 @@
 This module is soo not for public use...
 '''
 
-from annotationlib import get_annotations
 from enum import StrEnum, auto
 from requests import HTTPError
 import requests
+from mcli.lib import jsonclass
 
 APIURL = 'https://api.modrinth.com/v2'
-
-# Coding? more like multi-level developer / program torturing...
-def _jsonclass(cls):
-	'''Like `@dataclass` but less fucked and more fucked...'''
-	#superinit = cls.__init__
-	def init(self, **kwargs):
-		#superinit(self)
-		for prop in get_annotations(cls).keys():
-			if kwargs.get(prop, None) is not None:
-				setattr(self, prop, kwargs[prop])
-	cls.__init__ = init
-	return cls
 
 class Category(StrEnum):
 	'''Categories a project falls under.'''
@@ -79,7 +67,7 @@ class FileType(StrEnum):
 	UNKNOWN = 'unknown'
 
 
-@_jsonclass
+@jsonclass
 class File:
 	'''A modrinth kind of file.'''
 	url: str
@@ -90,7 +78,7 @@ class File:
 	def __repr__(self) -> str:
 		return f'<ModrinthFile "{self.filename}">'
 
-@_jsonclass
+@jsonclass
 class Project:
 	'''A project in modrinth.'''
 	id: str
@@ -133,7 +121,7 @@ class Project:
 
 		return cls(**d)
 
-@_jsonclass
+@jsonclass
 class ProjectVersion:
 	'''A version of a project.'''
 	project_id: str
@@ -153,7 +141,7 @@ class ProjectVersion:
 	def __repr__(self) -> str:
 		return f'<ProjectVersion {self.project_id}:{self.name}>'
 
-@_jsonclass
+@jsonclass
 class Search:
 	'''A result of a `search()`.'''
 	queried: str
