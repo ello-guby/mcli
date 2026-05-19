@@ -16,11 +16,11 @@ def search(
 	mcver: str = ''
 ) -> None:
 	'''Search for Modrinth projects and print them.'''
+	que = f' with "{query}"' if query else ''
+	lod = f' for "{loader}({mcver})"' if loader and mcver else ''
 
 	stdout.write(
-		f'Searching Modrinth for "{query}"' + (
-			f' for "{loader}({mcver})".' if loader else '.'
-		)
+		f'Searching Modrinth{que}{lod}.'
 	)
 	stdout.flush()
 
@@ -33,9 +33,9 @@ def search(
 	)
 
 	if not s.total_hits:
-		print('\33[2K\rNo project found.')
+		print(f'\33[2K\rNo project found{que}{lod}.')
 	else:
-		print(f'\33[2K\rFound {s.total_hits} projects:\n')
+		print(f'\33[2K\rFound {s.total_hits} projects{que}{lod}:\n')
 		for hit in s.hits:
 			hit.prettyprint()
 			print()
