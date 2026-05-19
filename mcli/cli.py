@@ -219,6 +219,14 @@ class SwitchParser:
 				return switch
 
 		raise LookupError(f'No switch with reference of "{ref}" found.')
+	
+	def has(self, ref: str) -> bool:
+		'''Return `True` if there is switch with reference of `ref`.'''
+		try:
+			self.findswitch(ref)
+			return True
+		except LookupError:
+			return False
 
 	@staticmethod
 	def isswitch(switch: str) -> bool:
@@ -258,6 +266,14 @@ class SwitchParser:
 
 		return short, key, capturing, value
 
+	def __contains__(self, item: str | Switch) -> bool:
+		itm = item
+
+		if isinstance(itm, Switch):
+			itm = itm.long
+
+		return self.has(itm)
+
 class Cmd:
 	'''
 	mcli's takes on python's cmd.Cmd class.
@@ -289,7 +305,9 @@ class Cmd:
 
 		if cmd in self.commands:
 			cmd = self.commands[cmd]
-			if self.switches.isswitch()
+			if 'help' in self.switches and self.switches['help']:
+				print(cmd.__doc__)
+				return
 		else:
 			raise LookupError(f'There are no "{cmd}" command.')
 
