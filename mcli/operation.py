@@ -7,7 +7,14 @@ import requests
 from mcli import modrinth
 from mcli.meta import Dot
 
-def search(query: str, *, loader: str = '', mcver: str = '') -> None:
+def search(
+	query: str,
+	*,
+	offset: int = 0,
+	limit: int = 10,
+	loader: str = '',
+	mcver: str = ''
+) -> None:
 	'''Search for Modrinth projects and print them.'''
 
 	stdout.write(
@@ -17,7 +24,13 @@ def search(query: str, *, loader: str = '', mcver: str = '') -> None:
 	)
 	stdout.flush()
 
-	s = modrinth.search(query, loader, mcver)
+	s = modrinth.search(
+		query,
+		offset=offset,
+		limit=limit,
+		forloader=loader,
+		formcver=mcver
+	)
 
 	if not s.total_hits:
 		print('\33[2K\rNo project found.')
