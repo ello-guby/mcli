@@ -6,12 +6,24 @@ from mcli.minecraft import Instance
 from mcli.cli import Cmd
 from mcli.meta import Dot
 
-def search(query: str, instance: Instance) -> None:
+def search(
+	query: str,
+	instance: Instance,
+	*,
+	perpage: int = 10,
+	page: int = 0,
+) -> None:
 	'''Interfaced `operation.search`.'''
 	if not instance:
-		operation.search(query)
+		operation.search(query, limit=perpage, offset=perpage*page)
 	else:
-		operation.search(query, loader=instance.loader, mcver=instance.version)
+		operation.search(
+			query,
+			loader=instance.loader,
+			mcver=instance.version,
+			limit=perpage,
+			offset=perpage*page
+		)
 
 def download(slugid: str, instance: Instance, dot: Dot) -> None:
 	'''Interfaced `operation.download`.'''
@@ -47,6 +59,13 @@ def remove(slugid: str, dot: Dot) -> None:
 
 class MCmd(Cmd):
 	'''mcli's custom Cmd.'''
+
+	SWITCHSPECS = [
+		'h/help: Print help for the command.',
+		'perpage=NUMBER: For `search`, print `NUMBER` of entry. Default 10.',
+		'page=NUMBER: For `search`, print entries at page `NUMBER`. Default 0.',
+	]
+
 	def __init__(self, instance: Instance, dot: Dot) -> None:
 		super().__init__()
 
@@ -71,7 +90,20 @@ class MCmd(Cmd):
 
 	def do_search(self, args: list[str]) -> None:
 		'''search|find|s|f [query...]: Search for projects like [query...].'''
-		search(' '.join(args), self.instance)
+		perpage = 10
+		page = 0
+		
+		if self.switches['perpage']:
+			perpage = int(self.switches['perpage'].value)
+		if self.switches['page']:
+			page = int(self.switches['page'].value)
+
+		search(
+			' '.join(args),
+			self.instance,
+			perpage=perpage,
+			page=page
+		)
 
 	def do_download(self, args: list[str]) -> None:
 		'''download|install|d|i [slugid...]: Download and install a project like [slugid...].'''
