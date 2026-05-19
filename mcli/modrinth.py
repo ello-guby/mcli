@@ -140,12 +140,14 @@ class ProjectVersion:
 	id: str
 	name: str
 	version_number: str
+	dependencies: list[str] = [] # list of project id.
 	files: list[File] = []
 
 	@classmethod
 	def fromdict(cls, d: dict):
 		'''Create `ProjectVersion`'''
 		d['files'] = [File(**f) for f in d['files']]
+		d['dependencies'] = [dep['project_id'] for dep in d['dependencies']]
 		return cls(**d)
 
 	def __repr__(self) -> str:
@@ -203,7 +205,11 @@ def get_project(slugid: str) -> Project:
 	d = r.json()
 	return Project.fromdict(d)
 
-def get_project_versions(slugid: str, forloader: str = '', formcver: str = '') -> list[ProjectVersion]:
+def get_project_versions(
+	slugid: str,
+	forloader: str = '',
+	formcver: str = ''
+) -> list[ProjectVersion]:
 	r = requests.get(
 		f'{APIURL}/project/{slugid}/version',
 		{
