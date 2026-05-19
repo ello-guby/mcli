@@ -222,7 +222,7 @@ class SwitchParser:
 
 	@staticmethod
 	def isswitch(switch: str) -> bool:
-		'''Wheather `switch` is a valid switch.'''
+		'''Wheather `switch` is a valid switch to be processed.'''
 		return switch.startswith('-')
 
 	@staticmethod
@@ -289,6 +289,7 @@ class Cmd:
 
 		if cmd in self.commands:
 			cmd = self.commands[cmd]
+			if self.switches.isswitch()
 		else:
 			raise LookupError(f'There are no "{cmd}" command.')
 
