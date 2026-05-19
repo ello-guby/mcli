@@ -264,10 +264,12 @@ class Cmd:
 	'''
 
 	COMMAND_PREFIX = 'do_'
+	SWITCHSPECS = ['h/help']
 
 	def __init__(self) -> None:
 		'''Create a new `Cmd`'''
 		self.commands: dict[str, Callable] = {}
+		self.switches = SwitchParser(*self.SWITCHSPECS)
 
 		for cmd in self._commands():
 			self.commands[cmd.__name__.removeprefix(self.COMMAND_PREFIX)] = cmd
@@ -281,6 +283,9 @@ class Cmd:
 		And passing other arguments into the command.
 		'''
 		cmd, *args = args
+
+		self.switches.reset()
+		args = self.switches.process(args)
 
 		if cmd in self.commands:
 			cmd = self.commands[cmd]
