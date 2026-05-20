@@ -22,14 +22,23 @@ class Instance:
 		with open(latestlog, 'r', encoding='utf8') as log:
 			loghead = log.readline()
 
+			def valid(mdat: re.Match|None) -> bool:
+				if not mdat:
+					return False
+				return mdat.group('loader').lower() in Loader
+
 			matchdat = re.search( # fabric log regex.
 				'^.*?Loading Minecraft (?P<mcver>.*?) with (?P<loader>.*?) Loader (?P<loaderver>.*?)$',
 				loghead
 			)
+			matchdat = re.search( # neoforge log regex.
+				r'^.*?--version, (?P<loader>.*?)-(?P<loaderver>.*?), .*?--fml\.mcVersion, (?P<mcver>.*?), .*?$',
+				loghead
+			) if not valid(matchdat) else matchdat
 			matchdat = re.search( # forge log regex.
 				'^.*?--version, (?P<mcver>.*?)-(?P<loader>.*?)-(?P<loaderver>.*?),.*?$',
 				loghead
-			) if not matchdat else matchdat
+			) if not valid(matchdat) else matchdat
 
 			if matchdat:
 				self.version = matchdat.group('mcver')
