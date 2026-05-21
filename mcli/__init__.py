@@ -4,7 +4,7 @@ from mcli import operation
 from mcli import modrinth
 from mcli.minecraft import Instance
 from mcli.cli import Cmd
-from mcli.meta import Dot
+from mcli.meta import Dot, instanceprojecttypefolder
 
 def search(
 	query: str,
@@ -32,14 +32,7 @@ def download(slugid: str, instance: Instance, dot: Dot) -> None:
 
 	proj = modrinth.get_project(slugid)
 
-	downpath = ''
-	match proj.type:
-		case modrinth.ProjectType.MOD:
-			downpath = instance.modfolder
-		case modrinth.ProjectType.SHADER:
-			downpath = instance.shaderfolder
-		case modrinth.ProjectType.RESOURCEPACK:
-			downpath = instance.resourcepackfolder
+	downpath = instanceprojecttypefolder(project=proj, instance=instance)
 
 	if downpath:
 		operation.download(

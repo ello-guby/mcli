@@ -6,6 +6,27 @@ from os import path
 from mcli import modrinth
 from mcli.minecraft import Instance
 
+def instanceprojecttypefolder(
+	projecttype: modrinth.ProjectType = modrinth.ProjectType.MOD,
+	*,
+	project: modrinth.Project|None = None,
+	instance: Instance|None = None
+) -> str:
+	'''Return `instance`'s folder path that `project` target.'''
+	if project is not None:
+		projecttype = project.type
+	if instance is None:
+		instance = Instance('') # dummy instance
+
+	match projecttype:
+		case modrinth.ProjectType.MOD:
+			return instance.modfolder
+		case modrinth.ProjectType.SHADER:
+			return instance.shaderfolder
+		case modrinth.ProjectType.RESOURCEPACK:
+			return instance.resourcepackfolder
+	return ''
+
 class Dot:
 	'''mcli's dotdir manager. Work by attaching itself on a minecraft instance.'''
 	def __init__(self, instance: Instance) -> None:
