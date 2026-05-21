@@ -3,12 +3,25 @@
 This module is soo not for public use...
 '''
 
+import re
 from enum import StrEnum, auto
 from requests import HTTPError
 import requests
 from mcli.lib import jsonclass
 
 APIURL = 'https://api.modrinth.com/v2'
+
+def isslug(slugid: str) -> bool:
+	'''Return `True` if `slugid` is a slug.'''
+	return re.match(r'^[\w!@$()`.+,"\-\']{3,64}$', slugid) is not None
+
+def isid(slugid: str) -> bool:
+	'''Return `True` if `slugid` is a id.'''
+	return re.match('^[A-Za-z0-9]{8}$', slugid) is not None
+
+def isslugid(slugid: str) -> bool:
+	'''Return `True` when `slugid` is either slug or id.'''
+	return isslug(slugid) or isid(slugid)
 
 class Category(StrEnum):
 	'''Categories a project falls under.'''
