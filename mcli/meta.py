@@ -4,6 +4,7 @@ import json
 import os
 from os import path
 from mcli import modrinth
+from mcli.lib import jsonclass
 from mcli.minecraft import Instance
 
 def instanceprojecttypefolder(
@@ -27,11 +28,34 @@ def instanceprojecttypefolder(
 			return instance.resourcepackfolder
 	return ''
 
+@jsonclass
+class Package:
+	'''For storing downloaded project data.'''
+	slug: str
+	id: str
+	files: list[str] = []
+	dependencies: list[str] = []
+
+	@classmethod
+	def fromprojectversion(cls, project: modrinth.Project, version: modrinth.ProjectVersion):
+		'''Create `Package` from `project` and `version`'''
+		d: dict = {}
+		i = Instance('') # dummy instance to get paths for files.
+
+		fp = instanceprojecttypefolder(project=project, instance=i)
+
+		d['slug'] = project.slug
+		d['id'] = project.id
+		d['files'] = [path.join(fp, f.filename) for f in version.files]
+		d['dependencies'] = version.dependencies
+
+		return cls(**d)
+
 class Dot:
 	'''mcli's dotdir manager. Work by attaching itself on a minecraft instance.'''
 	def __init__(self, instance: Instance) -> None:
 		self.instance = instance
-		self.packages: dict[str, list[str]] = {}
+		self.packages: list[Package] = []
 
 		if instance:
 			if not path.exists(self.folder):
@@ -44,38 +68,30 @@ class Dot:
 				with open(self.packagejson, 'rt', encoding='utf8') as file:
 					txt = file.read()
 					if txt:
-						self.packages = json.loads(txt)
+						self.packages = [Package(**d) for d in json.loads(txt)['packages']]
 
-	def set_package(self, project: modrinth.Project, filepaths: list[str]) -> None:
+	def set_package(self, project: modrinth.Project, version: modrinth.ProjectVersion) -> None:
 		'''set downloaded data into the package.json file.'''
-		self.packages[self.slugid(project)] = filepaths
+		self.packages.append(Package.fromprojectversion(project, version))
 		self.packagesave()
 
 	def remove_package(self, slugid: str) -> None:
 		'''Remove data from the package.json file.'''
-		for pkg in self.packages.keys():
-			if self.slugidmatch(slugid, pkg):
-				del self.packages[pkg]
+		for p in self.packages:
+			if (
+				modrinth.isslug(slugid) and p.slug == slugid
+			) or (
+				modrinth.isid(slugid) and p.id == slugid
+			):
+				self.packages.remove(p)
+				self.packagesave()
 				break
-		self.packagesave()
 
 	def packagesave(self) -> None:
 		'''Save the packages data.'''
 		if self.instance:
 			with open(self.packagejson, 'wt', encoding='utf8') as file:
-				file.write(json.dumps(self.packages, indent=2))
-
-	@staticmethod
-	def slugid(project: modrinth.Project) -> str:
-		'''Return package string based of `project`.'''
-		return f'{project.slug}|{project.id}'
-
-	@staticmethod
-	def slugidmatch(s: str, slugid: str) -> bool:
-		'''Match `s` with `slugid`. If `slugid` is invalid, default to str match.'''
-		if '|' in slugid:
-			return s in slugid.split('|', 1)
-		return s == slugid
+				file.write(json.dumps({'packages': [p.__dict__ for p in self.packages]}, indent=2))
 
 	@property
 	def folder(self) -> str:

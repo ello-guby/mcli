@@ -46,9 +46,9 @@ def download(slugid: str, instance: Instance, dot: Dot) -> None:
 	else:
 		raise TypeError(f'Project "{proj.slug}" is of type "{proj.type}", download is unsupported.')
 
-def remove(slugid: str, dot: Dot) -> None:
+def remove(slugid: str, instance: Instance, dot: Dot) -> None:
 	'''Interfaced `operation.remove`.'''
-	operation.remove(slugid, dot)
+	operation.remove(slugid, instance, dot)
 
 class MCmd(Cmd):
 	'''mcli's custom Cmd.'''
@@ -85,7 +85,7 @@ class MCmd(Cmd):
 		'''search|find|s|f [query...]: Search for projects like [query...].'''
 		perpage = 10
 		page = 0
-		
+
 		if self.switches['perpage']:
 			perpage = int(self.switches['perpage'].value)
 		if self.switches['page']:
@@ -106,9 +106,9 @@ class MCmd(Cmd):
 	def do_remove(self, args: list[str]) -> None:
 		'''remove|rm [slugid...]: Delete installed projects like [slugid...].'''
 		for arg in args:
-			remove(arg, self.dot)
+			remove(arg, self.instance, self.dot)
 
-	def do_status(self, args: list[str]) -> None:
+	def do_status(self, _: list[str]) -> None:
 		'''status: Print environment status.'''
 		print(f'{self.instance.loader}({self.instance.version}) at "{self.instance.path}"')
 

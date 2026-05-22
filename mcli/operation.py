@@ -6,6 +6,7 @@ from os import path
 import requests
 from mcli import modrinth
 from mcli.meta import Dot
+from mcli.minecraft import Instance
 
 def search(
 	query: str,
@@ -72,17 +73,21 @@ def download(
 	proj = project if project else modrinth.get_project(slugid)
 
 	if dot:
-		dot.set_package(proj, [path.abspath(path.join(outdir, file.filename)) for file in ver.files])
+		dot.set_package(proj, ver)
 
-def remove(slugid: str, dot: Dot) -> None:
+def remove(slugid: str, instance: Instance, dot: Dot) -> None:
 	'''Remove `slugid`.'''
 	if not dot:
 		raise EnvironmentError(f'mcli did not initialize properly. "{dot.packagejson}" not found.')
 
-	for pkg, files in dot.packages.items():
-		if dot.slugidmatch(slugid, pkg):
-			for file in files:
-				os.remove(file)
+	for pkg in dot.packages:
+		if (
+			modrinth.isslug(slugid) and pkg.slug == slugid
+		) or (
+			modrinth.isid(slugid) and pkg.id == slugid
+		):
+			for file in pkg.files:
+				os.remove(path.join(instance.path, file))
 				print(f'Deleted "{file}"')
 			break
 
@@ -93,10 +98,9 @@ def list_packages(query: str, dot: Dot) -> None:
 	if not dot:
 		raise EnvironmentError(f'mcli did not initialize properly. "{dot.packagejson}" not found.')
 
-	for pkg in dot.packages.keys():
+	for pkg in dot.packages:
 		if query:
-			if query in pkg:
-				print(pkg)
+			if query in pkg.slug or query in pkg.id:
+				print(pkg.slug)
 		else:
-			print(pkg)
-
+			print(pkg.slug)
