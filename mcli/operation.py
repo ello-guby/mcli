@@ -56,7 +56,7 @@ def download(
 	vers = modrinth.get_project_versions(slugid, loader, mcver)
 
 	if not vers:
-		return
+		raise IndexError(f'`{slugid}` is not supported for "{loader}({mcver})".')
 
 	ver = vers[0]
 
