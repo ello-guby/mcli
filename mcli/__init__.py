@@ -43,12 +43,23 @@ def download(slugid: str, instance: Instance, dot: Dot) -> None:
 			dot=dot,
 			project=proj
 		)
+		fix_dependencies(instance, dot)
 	else:
 		raise TypeError(f'Project "{proj.slug}" is of type "{proj.type}", download is unsupported.')
 
 def remove(slugid: str, instance: Instance, dot: Dot) -> None:
 	'''Interfaced `operation.remove`.'''
 	operation.remove(slugid, instance, dot)
+
+def fix_dependencies(instance: Instance, dot: Dot) -> None:
+	'''Check packages missing dependencies and download them.'''
+	if not dot:
+		raise EnvironmentError(f'mcli did not initialize properly. "{dot.packagejson}" not found.')
+
+	for pkg in dot.packages:
+		for dep in pkg.dependencies:
+			if dep not in [pk.id for pk in dot.packages]:
+				download(dep, instance, dot)
 
 class MCmd(Cmd):
 	'''mcli's custom Cmd.'''
