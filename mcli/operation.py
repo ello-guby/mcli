@@ -14,7 +14,8 @@ def search(
 	offset: int = 0,
 	limit: int = 10,
 	loader: str = '',
-	mcver: str = ''
+	mcver: str = '',
+	ptype: modrinth.ProjectType = modrinth.ProjectType.MOD,
 ) -> None:
 	'''Search for Modrinth projects and print them.'''
 	que = f' with "{query}"' if query else ''
@@ -30,7 +31,8 @@ def search(
 		offset=offset,
 		limit=limit,
 		forloader=loader,
-		formcver=mcver
+		formcver=mcver,
+		ptype=ptype
 	)
 
 	if not s.total_hits:

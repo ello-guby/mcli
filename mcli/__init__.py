@@ -12,6 +12,7 @@ def search(
 	*,
 	perpage: int = 10,
 	page: int = 0,
+	ptype: modrinth.ProjectType = modrinth.ProjectType.MOD,
 ) -> None:
 	'''Interfaced `operation.search`.'''
 	if not instance:
@@ -22,7 +23,8 @@ def search(
 			loader=instance.loader,
 			mcver=instance.version,
 			limit=perpage,
-			offset=perpage*page
+			offset=perpage*page,
+			ptype=ptype
 		)
 
 def download(slugid: str, instance: Instance, dot: Dot) -> None:
@@ -57,6 +59,7 @@ class MCmd(Cmd):
 		'h/help: Print help for the command.',
 		'perpage=NUMBER: For `search`, print `NUMBER` of entry. Default 10.',
 		'page=NUMBER: For `search`, print entries at page `NUMBER`. Default 0.',
+		'type=mod|shader|resourcepack: For `search`, find entries of type `mod|shader|texturepack`.',
 	]
 
 	def __init__(self, instance: Instance, dot: Dot) -> None:
@@ -85,17 +88,21 @@ class MCmd(Cmd):
 		'''search|find|s|f [query...]: Search for projects like [query...].'''
 		perpage = 10
 		page = 0
+		ptype = modrinth.ProjectType.MOD
 
 		if self.switches['perpage']:
 			perpage = int(self.switches['perpage'].value)
 		if self.switches['page']:
 			page = int(self.switches['page'].value)
+		if self.switches['type']:
+			ptype = modrinth.ProjectType(self.switches['type'].value)
 
 		search(
 			' '.join(args),
 			self.instance,
 			perpage=perpage,
-			page=page
+			page=page,
+			ptype=ptype
 		)
 
 	def do_download(self, args: list[str]) -> None:

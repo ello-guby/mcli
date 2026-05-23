@@ -175,7 +175,8 @@ def search(
 	offset: int = 0,
 	limit: int = 10,
 	forloader: str = '',
-	formcver: str = ''
+	formcver: str = '',
+	ptype: ProjectType = ProjectType.MOD
 ) -> Search:
 	'''Search for projects.'''
 	r = requests.get(
@@ -183,7 +184,10 @@ def search(
 		{
 			'query': query, 'offset': offset, 'limit': limit,
 		} | ({
-			'facets': f'[["categories:{forloader}"],["versions:{formcver}"]]'
+			'facets': (
+				f'[["versions:{formcver}"],["project_type:{ptype}"]'
+				f'{f',["categories:{forloader}"]' if ptype == ProjectType.MOD else ''}]'
+			)
 		} if forloader and formcver else {}),
 		timeout=5000
 	)
